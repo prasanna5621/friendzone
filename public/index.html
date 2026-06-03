@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FriendZone - Real-time group collaboration app with chat, video calls, whiteboard, games & competition">
+  <title>FriendZone — Squad Up. Level Up.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- ============ PARTICLES BACKGROUND ============ -->
+    <div id="particles-bg"></div>
+
+    <!-- ============ LOGIN SCREEN ============ -->
+    <div id="screen-login" class="screen active">
+      <div class="login-container">
+        <div class="login-card glass-panel">
+          <div class="app-logo">
+            <span class="logo-icon">🚀</span>
+            <h1 class="logo-text">FriendZone</h1>
+            <p class="logo-tagline">Squad Up. Level Up.</p>
+          </div>
+          <div class="login-form">
+            <div class="input-group">
+              <label for="login-username">Choose your username</label>
+              <input type="text" id="login-username" placeholder="Enter username..." maxlength="20" autocomplete="off">
+            </div>
+            <div class="input-group">
+              <label for="login-status">Status / Mood (optional)</label>
+              <input type="text" id="login-status" placeholder="e.g. 🎮 Gaming mode" maxlength="30" autocomplete="off">
+            </div>
+            <div class="avatar-section">
+              <label>Pick your avatar</label>
+              <div class="avatar-preview-wrapper">
+                <img id="login-avatar-preview" src="" alt="Avatar preview" style="display: none;">
+                <div id="login-avatar-emoji-preview" class="avatar-emoji-preview">🦊</div>
+                <label for="login-avatar-input" class="avatar-upload-btn">📷 Upload</label>
+                <input type="file" id="login-avatar-input" accept="image/*" hidden>
+              </div>
+              <div class="default-avatars" id="default-avatars">
+                <!-- 8 default avatar options using emoji -->
+                <button class="avatar-option selected" data-avatar="🦊">🦊</button>
+                <button class="avatar-option" data-avatar="🐸">🐸</button>
+                <button class="avatar-option" data-avatar="🦁">🦁</button>
+                <button class="avatar-option" data-avatar="🐼">🐼</button>
+                <button class="avatar-option" data-avatar="🦄">🦄</button>
+                <button class="avatar-option" data-avatar="🐉">🐉</button>
+                <button class="avatar-option" data-avatar="👾">👾</button>
+                <button class="avatar-option" data-avatar="🤖">🤖</button>
+              </div>
+            </div>
+            <button id="btn-register" class="btn btn-primary btn-lg">
+              <span>Enter the Zone</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DASHBOARD SCREEN ============ -->
+    <div id="screen-dashboard" class="screen">
+      <header class="dashboard-header">
+        <div class="header-left">
+          <span class="logo-icon-sm">🚀</span>
+          <h2>FriendZone</h2>
+        </div>
+        <div class="header-center">
+          <div class="user-info">
+            <div class="user-avatar-sm" id="my-avatar-display"></div>
+            <div class="user-text-col">
+              <span id="my-username-display"></span>
+              <span id="my-status-display" class="status-text-sm"></span>
+            </div>
+            <div class="points-badge">
+              <span class="points-icon">⚡</span>
+              <span id="my-points-display">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <button id="btn-toggle-sound" class="btn-icon" title="Toggle Sound">🔊</button>
+          <button id="btn-create-group" class="btn btn-primary">+ Create Group</button>
+          <button id="btn-join-group" class="btn btn-secondary">🔗 Join Group</button>
+          <button id="btn-global-leaderboard" class="btn btn-ghost">🏆 Leaderboard</button>
+        </div>
+      </header>
+
+      <main class="dashboard-content">
+        <section class="groups-section">
+          <h3 class="section-title">Your Groups</h3>
+          <div class="groups-grid" id="groups-list">
+            <!-- Group cards injected here -->
+            <div class="group-card-placeholder" id="no-groups-msg">
+              <span class="placeholder-icon">🏠</span>
+              <p>No groups yet. Create one or join with a code!</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="all-groups-section">
+          <h3 class="section-title">All Groups <span class="badge">Compete!</span></h3>
+          <div class="all-groups-list" id="all-groups-list">
+            <!-- All group rows injected here -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ============ GROUP SCREEN ============ -->
+    <div id="screen-group" class="screen">
+      <!-- SIDEBAR -->
+      <aside id="group-sidebar" class="glass-panel">
+        <div class="sidebar-header">
+          <div class="sidebar-top-actions">
+            <button id="btn-back-dashboard" class="btn btn-ghost btn-sm">← Back</button>
+            <button id="btn-mobile-members" class="btn btn-ghost btn-sm mobile-only" style="display:none;">👥</button>
+          </div>
+          <h3 id="group-name-display">Group Name</h3>
+          <div class="invite-code-box">
+            <span class="invite-label">Invite Code:</span>
+            <code id="group-invite-code">ABC123</code>
+            <button id="btn-copy-invite" class="btn-icon" title="Copy">📋</button>
+          </div>
+          <div id="group-admin-badge" class="admin-badge" style="display:none;">👑 Admin</div>
+        </div>
+
+        <div class="sidebar-members">
+          <h4>Members <span id="member-count-display" class="badge">0</span></h4>
+          <ul id="members-list" class="members-list">
+            <!-- Member items injected -->
+          </ul>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="nav-btn active" data-tab="chat">
+            <span class="nav-icon">💬</span>
+            <span class="nav-label">Chat</span>
+          </button>
+          <button class="nav-btn" data-tab="video">
+            <span class="nav-icon">📹</span>
+            <span class="nav-label">Video</span>
+          </button>
+          <button class="nav-btn" data-tab="whiteboard">
+            <span class="nav-icon">🎨</span>
+            <span class="nav-label">Board</span>
+          </button>
+          <button class="nav-btn" data-tab="games">
+            <span class="nav-icon">🎮</span>
+            <span class="nav-label">Games</span>
+          </button>
+          <button class="nav-btn" data-tab="leaderboard">
+            <span class="nav-icon">🏆</span>
+            <span class="nav-label">Ranks</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button id="btn-cross-chat" class="btn btn-accent btn-sm">💬 Cross-Group Chat</button>
+          <button id="btn-leave-group" class="btn btn-danger btn-sm">🚪 Leave Group</button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <div class="group-content">
+        <!-- CHAT TAB -->
+        <div id="tab-chat" class="tab-panel active">
+          <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+              <!-- Messages injected here -->
+              <div class="chat-welcome">
+                <span>👋</span>
+                <p>Welcome! Start chatting with your group.</p>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <button id="btn-chat-poll" class="btn-icon" title="Create Poll">📊</button>
+              <input type="text" id="chat-input" placeholder="Type a message or /roll..." autocomplete="off">
+              <button id="btn-send-chat" class="btn btn-primary">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIDEO TAB -->
+        <div id="tab-video" class="tab-panel">
+          <div class="video-container">
+            <div id="video-grid" class="video-grid">
+              <!-- Video elements injected here -->
+              <div class="video-placeholder">
+                <span>📹</span>
+                <p>Click "Join Call" to start a video session</p>
+              </div>
+            </div>
+            <div class="video-controls">
+              <button id="btn-join-call" class="btn btn-primary">📞 Join Call</button>
+              <button id="btn-toggle-mic" class="btn btn-ghost" style="display:none">🎤</button>
+              <button id="btn-toggle-camera" class="btn btn-ghost" style="display:none">📷</button>
+              <button id="btn-share-screen" class="btn btn-ghost" style="display:none">🖥️ Share Screen</button>
+              <button id="btn-leave-call" class="btn btn-danger" style="display:none">📞 Leave</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHITEBOARD TAB -->
+        <div id="tab-whiteboard" class="tab-panel">
+          <div class="whiteboard-container">
+            <div class="wb-toolbar glass-panel">
+              <div class="wb-tools">
+                <button class="wb-tool active" id="wb-tool-pen" title="Pen">✏️</button>
+                <button class="wb-tool" id="wb-tool-eraser" title="Eraser">🧹</button>
+                <button class="wb-tool" id="wb-tool-line" title="Line">📏</button>
+                <button class="wb-tool" id="wb-tool-rect" title="Rectangle">⬜</button>
+                <button class="wb-tool" id="wb-tool-circle" title="Circle">⭕</button>
+                <button class="wb-tool" id="wb-tool-text" title="Text">🔤</button>
+              </div>
+              <div class="wb-options">
+                <input type="color" id="wb-color" value="#00cec9" title="Color">
+                <input type="range" id="wb-size" min="1" max="20" value="3" title="Brush Size">
+                <span id="wb-size-display" class="size-display">3px</span>
+              </div>
+              <div class="wb-actions">
+                <button id="btn-wb-undo" class="btn btn-ghost btn-sm">↩️ Undo</button>
+                <button id="btn-wb-clear" class="btn btn-danger btn-sm">🗑️ Clear</button>
+              </div>
+            </div>
+            <canvas id="whiteboard-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- GAMES TAB -->
+        <div id="tab-games" class="tab-panel">
+          <!-- GAME LOBBY -->
+          <div id="game-lobby" class="game-lobby">
+            <h3 class="section-title">🎮 Game Arcade</h3>
+            <div class="games-grid">
+              <div class="game-card" data-game="tictactoe">
+                <div class="game-card-icon">❌⭕</div>
+                <h4>Tic-Tac-Toe</h4>
+                <p>Classic strategy • 2 Players</p>
+                <span class="game-points">+10 pts</span>
+              </div>
+              <div class="game-card" data-game="rps">
+                <div class="game-card-icon">✊✋✌️</div>
+                <h4>Rock Paper Scissors</h4>
+                <p>Quick reflexes • 2 Players</p>
+                <span class="game-points">+15 pts</span>
+              </div>
+              <div class="game-card" data-game="trivia">
+                <div class="game-card-icon">🧠</div>
+                <h4>Trivia Quiz</h4>
+                <p>Test your knowledge • 2+ Players</p>
+                <span class="game-points">+15 pts</span>
+              </div>
+              <div class="game-card" data-game="wordscramble">
+                <div class="game-card-icon">🔤</div>
+                <h4>Word Scramble</h4>
+                <p>Unscramble the word • 2+ Players</p>
+                <span class="game-points">+15 pts</span>
+              </div>
+              <div class="game-card" data-game="reaction">
+                <div class="game-card-icon">⚡</div>
+                <h4>Reaction Test</h4>
+                <p>Lightning fast reflexes • 2+ Players</p>
+                <span class="game-points">+15 pts</span>
+              </div>
+              <div class="game-card" data-game="memory">
+                <div class="game-card-icon">🃏</div>
+                <h4>Memory Cards</h4>
+                <p>Match the pairs • 2 Players</p>
+                <span class="game-points">+15 pts</span>
+              </div>
+              <div class="game-card" data-game="typeracer">
+                <div class="game-card-icon">⌨️</div>
+                <h4>Type Racer</h4>
+                <p>Speed typing challenge • 2+ Players</p>
+                <span class="game-points">+15 pts</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME WAITING ROOM -->
+          <div id="game-waiting" class="game-waiting" style="display:none">
+            <div class="glass-panel waiting-panel">
+              <h3 id="game-waiting-title">Waiting for players...</h3>
+              <div id="game-waiting-players" class="waiting-players"></div>
+              <div class="waiting-actions">
+                <button id="btn-game-start" class="btn btn-primary">🎮 Start Game</button>
+                <button id="btn-game-join" class="btn btn-primary" style="display:none">🎮 Join Game</button>
+                <button id="btn-game-cancel" class="btn btn-danger">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME ARENA (active game) -->
+          <div id="game-arena" class="game-arena" style="display:none">
+            <div class="game-header">
+              <h3 id="game-arena-title"></h3>
+              <div id="game-score-display" class="game-scores"></div>
+            </div>
+            <div id="game-board" class="game-board">
+              <!-- Game-specific content injected here -->
+            </div>
+            <div id="game-status" class="game-status"></div>
+            <div id="game-result" class="game-result" style="display:none">
+              <div class="result-content glass-panel">
+                <h2 id="game-result-title"></h2>
+                <div id="game-result-details"></div>
+                <button id="btn-game-back" class="btn btn-primary">Back to Arcade</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEADERBOARD TAB -->
+        <div id="tab-leaderboard" class="tab-panel">
+          <div class="leaderboard-container">
+            <div class="lb-toggle">
+              <button id="btn-lb-group" class="btn btn-primary active">👥 Group</button>
+              <button id="btn-lb-global" class="btn btn-ghost">🌍 Global</button>
+            </div>
+            <div id="lb-group-content" class="lb-content">
+              <h3>Group Leaderboard</h3>
+              <div id="lb-group-list" class="lb-list">
+                <!-- Leaderboard rows injected -->
+              </div>
+            </div>
+            <div id="lb-global-content" class="lb-content" style="display:none">
+              <h3>Global Leaderboard</h3>
+              <div id="lb-global-groups" class="lb-section">
+                <h4>🏆 Top Groups</h4>
+                <div id="lb-global-groups-list" class="lb-list"></div>
+              </div>
+              <div id="lb-global-users" class="lb-section">
+                <h4>⚡ Top Players</h4>
+                <div id="lb-global-users-list" class="lb-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODALS ============ -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <div id="modal-create-group" class="modal glass-panel">
+      <div class="modal-header">
+        <h3>Create a Group</h3>
+        <button class="modal-close" data-modal="modal-create-group">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="create-group-name">Group Name</label>
+          <input type="text" id="create-group-name" placeholder="Enter group name..." maxlength="30">
+        </div>
+        <button id="btn-confirm-create" class="btn btn-primary btn-lg">🚀 Create Group</button>
+      </div>
+    </div>
+
+    <div id="modal-join-group" class="modal glass-panel">
+      <div class="modal-header">
+        <h3>Join a Group</h3>
+        <button class="modal-close" data-modal="modal-join-group">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="join-group-code">Invite Code</label>
+          <input type="text" id="join-group-code" placeholder="Enter invite code..." maxlength="6" style="text-transform: uppercase;">
+        </div>
+        <button id="btn-confirm-join" class="btn btn-primary btn-lg">🔗 Join Group</button>
+      </div>
+    </div>
+
+    <div id="modal-cross-chat" class="modal glass-panel modal-lg">
+      <div class="modal-header">
+        <h3>Cross-Group Chat</h3>
+        <button class="modal-close" data-modal="modal-cross-chat">✕</button>
+      </div>
+      <div class="modal-body cross-chat-body">
+        <div class="cross-chat-sidebar">
+          <h4>Groups</h4>
+          <div id="cross-chat-groups" class="cross-chat-groups-list"></div>
+        </div>
+        <div class="cross-chat-main">
+          <div id="cross-chat-messages" class="chat-messages"></div>
+          <div class="chat-input-area">
+            <input type="text" id="cross-chat-input" placeholder="Message another group..." autocomplete="off">
+            <button id="btn-send-cross-chat" class="btn btn-accent">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-global-leaderboard" class="modal glass-panel modal-lg">
+      <div class="modal-header">
+        <h3>🏆 Global Leaderboard</h3>
+        <button class="modal-close" data-modal="modal-global-leaderboard">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="global-lb-groups" class="lb-section">
+          <h4>Top Groups</h4>
+          <div id="global-lb-groups-list" class="lb-list"></div>
+        </div>
+        <div id="global-lb-users" class="lb-section">
+          <h4>Top Players</h4>
+          <div id="global-lb-users-list" class="lb-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CONFETTI & TOASTS ============ -->
+    <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;"></canvas>
+    <div id="toast-container"></div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/groups.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/video.js"></script>
+  <script src="/js/whiteboard.js"></script>
+  <script src="/js/games.js"></script>
+  <script src="/js/leaderboard.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
