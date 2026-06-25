@@ -15,6 +15,13 @@ const PORT = process.env.PORT || 3000;
 const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
+// Disable browser caching so changes always show up
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Avatar upload
@@ -176,8 +183,51 @@ io.on('connection', (socket) => {
     }
     const userId = uuidv4();
     usernames.add(uname.toLowerCase());
-    users.set(socket.id, { userId, username: uname, avatar: avatar || '🦊', status: '', points: 0, groupId: null, lastActive: Date.now() });
-    socket.emit('user:registered', { userId, username: uname, avatar: avatar || '🦊' });
+    socket.emit('user:registered', { userId, username: uname, avatar: avatar || '🦊', status: '', points: 0 });
+  });
+
+  socket.on('user:reconnect', (data) => {
+    if (!data.userId || !data.username) return;
+    
+    // Cleanup old socket
+    for (const [sid, u] of users.entries()) {
+      if (u.userId === data.userId) {
+        users.delete(sid);
+        if (u.groupId) {
+          const g = groups.get(u.groupId);
+          if (g) g.members.delete(sid);
+        }
+      }
+    }
+    
+    usernames.add(data.username.toLowerCase());
+    const u = { 
+      userId: data.userId, 
+      username: data.username, 
+      avatar: data.avatar || '🦊', 
+      status: data.status || '', 
+      points: data.points || 0, 
+      groupId: data.groupId || null, 
+      lastActive: Date.now() 
+    };
+    users.set(socket.id, u);
+    
+    socket.emit('user:registered', { userId: u.userId, username: u.username, avatar: u.avatar, status: u.status, points: u.points });
+    
+    if (u.groupId) {
+      const g = groups.get(u.groupId);
+      if (g) {
+        g.members.add(socket.id);
+        socket.join(`group:${g.id}`);
+        socket.emit('group:joined', serializeGroup(g));
+        socket.to(`group:${g.id}`).emit('group:member-joined', {
+          groupId: g.id,
+          member: { userId: u.userId, username: u.username, avatar: u.avatar, status: u.status, points: u.points, socketId: socket.id }
+        });
+      } else {
+        u.groupId = null;
+      }
+    }
   });
 
   // ── Heartbeat ──

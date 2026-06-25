@@ -44,6 +44,15 @@ window.Auth = {
       AppState.userId = data.userId;
       AppState.username = data.username;
       AppState.avatar = data.avatar;
+      AppState.status = data.status || '';
+      
+      localStorage.setItem('fz_session', JSON.stringify({
+        userId: data.userId,
+        username: data.username,
+        avatar: data.avatar,
+        status: AppState.status,
+        groupId: AppState.currentGroupId
+      }));
       
       document.getElementById('my-username-display').textContent = data.username;
       document.getElementById('my-avatar-display').innerHTML = App.renderAvatar(data.avatar, 32);
@@ -77,5 +86,24 @@ window.Auth = {
       return;
     }
     socket.emit('user:register', { username: username.trim(), avatar: this.selectedAvatar });
+  },
+
+  tryReconnect() {
+    const sessionStr = localStorage.getItem('fz_session');
+    if (sessionStr) {
+      try {
+        const session = JSON.parse(sessionStr);
+        if (session.userId && session.username) {
+          socket.emit('user:reconnect', session);
+        }
+      } catch (e) {
+        localStorage.removeItem('fz_session');
+      }
+    }
   }
 };
+
+// Listen for socket connects to attempt reconnect
+socket.on('connect', () => {
+  if (window.Auth) window.Auth.tryReconnect();
+});

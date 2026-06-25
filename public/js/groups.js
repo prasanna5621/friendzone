@@ -23,6 +23,14 @@ window.Groups = {
         socket.emit('group:leave', { groupId: AppState.currentGroupId });
         AppState.currentGroupId = null;
         AppState.currentGroup = null;
+        
+        // Update session
+        const sessionStr = localStorage.getItem('fz_session');
+        if (sessionStr) {
+          const session = JSON.parse(sessionStr);
+          session.groupId = null;
+          localStorage.setItem('fz_session', JSON.stringify(session));
+        }
         App.showScreen('screen-dashboard');
         socket.emit('group:list');
         App.showToast('Left group', 'info');
@@ -83,6 +91,15 @@ window.Groups = {
     if (!AppState.groups.find(g => g.id === group.id)) {
       AppState.groups.push(group);
     }
+    
+    // Update session
+    const sessionStr = localStorage.getItem('fz_session');
+    if (sessionStr) {
+      const session = JSON.parse(sessionStr);
+      session.groupId = group.id;
+      localStorage.setItem('fz_session', JSON.stringify(session));
+    }
+    
     this.renderGroupsList();
 
     document.getElementById('group-name-display').textContent = group.name;
