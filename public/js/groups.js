@@ -60,6 +60,20 @@ window.Groups = {
         this.renderMembersList();
       }
     });
+    
+    socket.on('group:kicked', () => {
+      AppState.currentGroupId = null;
+      AppState.currentGroup = null;
+      const sessionStr = localStorage.getItem('fz_session');
+      if (sessionStr) {
+        const session = JSON.parse(sessionStr);
+        session.groupId = null;
+        localStorage.setItem('fz_session', JSON.stringify(session));
+      }
+      App.showScreen('screen-dashboard');
+      socket.emit('group:list');
+      App.showToast('You were kicked from the group', 'error');
+    });
 
     socket.on('group:member-joined', ({ groupId, member }) => {
       if (AppState.currentGroupId === groupId && AppState.currentGroup) {

@@ -333,7 +333,12 @@ io.on('connection', (socket) => {
     const u = users.get(socket.id);
     if (!u || !text) return;
     const g = groups.get(groupId);
-    if (!g) return;
+    if (!g) {
+      // Group doesn't exist (e.g., server restarted)
+      socket.emit('user:error', { message: 'Group no longer exists. You have been disconnected.' });
+      socket.emit('group:kicked');
+      return;
+    }
     const msg = {
       id: uuidv4(), senderId: u.userId, senderName: u.username, senderAvatar: u.avatar,
       text: text.trim(), timestamp: Date.now(), groupId, reactions: {}
