@@ -1519,9 +1519,78 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
   .group-content { height: calc(100vh - 110px); }
   .tab-panel { padding-bottom: 0; }
   
-  /* Chat tweaks */
-  .chat-input-area { padding: var(--space-xs); }
-  #chat-input { padding: 10px; font-size: 16px; /* prevent iOS zoom */ }
+  /* Chat tweaks - WhatsApp Style */
+  #tab-chat .chat-container { background: #efeae2; }
+  .chat-messages { padding: var(--space-sm); gap: var(--space-xs); }
+  .message { max-width: 90%; gap: 0; margin-bottom: 2px; }
+  .msg-avatar { display: none; }
+  
+  .msg-content { 
+    background: #ffffff; 
+    color: #111111; 
+    border-radius: 8px; 
+    border-top-left-radius: 0; 
+    padding: 6px 8px 20px 8px; 
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    position: relative;
+    min-width: 100px;
+  }
+  .own-message .msg-content { 
+    background: #dcf8c6; 
+    border-top-left-radius: 8px; 
+    border-top-right-radius: 0; 
+  }
+  
+  .msg-sender { font-size: 12px; color: #128C7E; font-weight: bold; margin-bottom: 2px; }
+  .own-message .msg-sender { display: none; } /* Hide sender name for own messages */
+  .msg-text { font-size: 15px; color: #111111; }
+  
+  .msg-time { 
+    position: absolute; 
+    bottom: 4px; 
+    right: 8px; 
+    font-size: 10px; 
+    color: rgba(0,0,0,0.45); 
+  }
+  
+  .chat-input-area { 
+    background: #efeae2; 
+    padding: 8px; 
+    gap: 6px; 
+    border: none;
+    align-items: flex-end;
+  }
+  #chat-input { 
+    background: #ffffff; 
+    color: #111111; 
+    border-radius: 20px; 
+    padding: 10px 15px; 
+    border: none; 
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    font-size: 16px; /* prevent iOS zoom */
+  }
+  #btn-send-chat { 
+    width: 40px; 
+    height: 40px; 
+    min-width: 40px;
+    border-radius: 50%; 
+    background: #00a884; 
+    color: white; 
+    padding: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  }
+  #btn-send-chat span { display: none; } /* Hide "Send" text if any */
+  #btn-send-chat::before { content: '➤'; font-size: 16px; margin-left: 2px; } /* Send icon */
+  #btn-chat-poll {
+    background: #ffffff;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    font-size: 18px;
+  }
 
   /* Games resizing */
   .game-card { padding: var(--space-md); }

@@ -15,9 +15,10 @@ window.Chat = {
       }, 2000);
     });
 
-    btnSend.addEventListener('click', () => this.sendChat(input.value));
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') this.sendChat(input.value);
+    const formChat = document.getElementById('form-chat');
+    formChat.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.sendChat(input.value);
     });
     
     const btnPoll = document.getElementById('btn-chat-poll');
