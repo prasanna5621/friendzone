@@ -15,10 +15,22 @@ window.Chat = {
       }, 2000);
     });
 
-    const formChat = document.getElementById('form-chat');
-    formChat.addEventListener('submit', (e) => {
+    const btnSend = document.getElementById('btn-send-chat');
+    const sendHandler = (e) => {
       e.preventDefault();
       this.sendChat(input.value);
+      input.blur(); // Dismiss keyboard on mobile
+    };
+    
+    // Use touchstart for immediate response on mobile, click for desktop
+    btnSend.addEventListener('touchstart', sendHandler, { passive: false });
+    btnSend.addEventListener('click', sendHandler);
+    
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.sendChat(input.value);
+      }
     });
     
     const btnPoll = document.getElementById('btn-chat-poll');
