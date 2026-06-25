@@ -355,13 +355,13 @@
         <h3>Create a Group</h3>
         <button class="modal-close" data-modal="modal-create-group">✕</button>
       </div>
-      <div class="modal-body">
+      <form id="form-create-group" class="modal-body">
         <div class="input-group">
           <label for="create-group-name">Group Name</label>
           <input type="text" id="create-group-name" placeholder="Enter group name..." maxlength="30">
         </div>
-        <button id="btn-confirm-create" class="btn btn-primary btn-lg">🚀 Create Group</button>
-      </div>
+        <button type="submit" id="btn-confirm-create" class="btn btn-primary btn-lg">🚀 Create Group</button>
+      </form>
     </div>
 
     <div id="modal-join-group" class="modal glass-panel">
@@ -369,13 +369,13 @@
         <h3>Join a Group</h3>
         <button class="modal-close" data-modal="modal-join-group">✕</button>
       </div>
-      <div class="modal-body">
+      <form id="form-join-group" class="modal-body">
         <div class="input-group">
           <label for="join-group-code">Invite Code</label>
           <input type="text" id="join-group-code" placeholder="Enter invite code..." maxlength="6" style="text-transform: uppercase;">
         </div>
-        <button id="btn-confirm-join" class="btn btn-primary btn-lg">🔗 Join Group</button>
-      </div>
+        <button type="submit" id="btn-confirm-join" class="btn btn-primary btn-lg">🔗 Join Group</button>
+      </form>
     </div>
 
     <div id="modal-cross-chat" class="modal glass-panel modal-lg">

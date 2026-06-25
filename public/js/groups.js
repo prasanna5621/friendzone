@@ -3,12 +3,14 @@ window.Groups = {
     document.getElementById('btn-create-group').addEventListener('click', () => App.openModal('modal-create-group'));
     document.getElementById('btn-join-group').addEventListener('click', () => App.openModal('modal-join-group'));
     
-    document.getElementById('btn-confirm-create').addEventListener('click', () => {
+    document.getElementById('form-create-group').addEventListener('submit', (e) => {
+      e.preventDefault();
       const name = document.getElementById('create-group-name').value;
       if (name.trim()) socket.emit('group:create', { name: name.trim() });
     });
     
-    document.getElementById('btn-confirm-join').addEventListener('click', () => {
+    document.getElementById('form-join-group').addEventListener('submit', (e) => {
+      e.preventDefault();
       const code = document.getElementById('join-group-code').value;
       if (code.trim()) socket.emit('group:join', { inviteCode: code.trim() });
     });
