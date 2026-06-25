@@ -43,7 +43,12 @@ const activeCalls = new Map();
 const usernames = new Set();
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-function genInvite() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
+function genInvite() {
+  const chars = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+  return result;
+}
 
 function serializeGroup(g) {
   const members = [];
@@ -266,7 +271,10 @@ io.on('connection', (socket) => {
     for (const g of groups.values()) {
       if (g.inviteCode === code) { targetGroup = g; break; }
     }
-    if (!targetGroup) return socket.emit('user:error', { message: 'Invalid invite code' });
+    if (!targetGroup) {
+      console.log(`Join failed: Invite code '${code}' not found. Current groups:`, Array.from(groups.values()).map(g => g.inviteCode));
+      return socket.emit('user:error', { message: 'Invalid invite code' });
+    }
     if (targetGroup.members.has(socket.id)) return socket.emit('user:error', { message: 'Already in this group' });
     targetGroup.members.add(socket.id);
     u.groupId = targetGroup.id;
